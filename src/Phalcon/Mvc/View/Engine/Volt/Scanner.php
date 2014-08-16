@@ -54,6 +54,18 @@ class Scanner
 	}
 
 	/**
+	 * Throw token exception
+	 * 
+	 * @param string $token
+	 * @param int $line
+	 * @throws Exception
+	*/
+	public function throwTokenException($token, $line)
+	{
+		throw new Exception('Unexpected token "'.$token.'" in '.$this->_file.' at line '.$line);
+	}
+
+	/**
 	 * Identify and extract block statements
 	 * 
 	 * @throws Exception
@@ -145,7 +157,7 @@ class Scanner
 					--$scannerComment;
 
 					if($scannerComment < 0) {
-						$this->throwTokenException('#}', $this->_file, $line);
+						$this->throwTokenException('#}', $line);
 					} elseif($scannerComment === 0) {
 						//Remove comment from buffer
 						$buffer = '';
@@ -160,7 +172,7 @@ class Scanner
 					}
 
 					if($scannerStatement === true) {
-						$this->throwTokenException('{{', $this->_file, $line);
+						$this->throwTokenException('{{', $line);
 					} else {
 						$scannerStatement = true;
 					}
@@ -169,7 +181,7 @@ class Scanner
 					/* Close echo statement */
 					if($scannerStatement === false ||
 						empty($buffer) === true) {
-						$this->throwTokenException('}}', $this->_file, $line);
+						$this->throwTokenException('}}', $line);
 					} else {
 						$intermediate[] = Tokenizer::echoFragment($buffer.$match, $this->_file, 
 							$line);
@@ -193,7 +205,7 @@ class Scanner
 					$blockMatches) != false) {
 					//Check for {% block NAME %}
 					if(is_string($scannerBlock) === true) {
-						$this->throwTokenException('{% block ', $this->_file, $line);
+						$this->throwTokenException('{% block ', $line);
 					} else {
 						if(empty($buffer) === false) {
 							$intermediate[] = Tokenizer::rawFragment($buffer, $this->_file, $line);
@@ -206,7 +218,7 @@ class Scanner
 					//Check for {% endblock %}
 					if(is_string($scannerBlock) === false ||
 						empty($buffer) === true) {
-						$this->throwTokenException('{% endblock %}', $this->_file, $line);
+						$this->throwTokenException('{% endblock %}', $line);
 					} else {
 						$intermediate[] = Tokenizer::blockFragment($scannerBlock, $buffer, $this->_file, $line);
 						$buffer = '';
@@ -229,7 +241,7 @@ class Scanner
 					--$scannerCache;
 
 					if($scannerCache < 0) {
-						$this->throwTokenException('{% endcache %}', $this->_file, $line);
+						$this->throwTokenException('{% endcache %}', $line);
 					} elseif($scannerCache === 0) {
 						$intermediate[] = Tokenizer::cacheFragment($buffer.$match, $this->_file, $line);
 						$buffer = '';
@@ -251,7 +263,7 @@ class Scanner
 					--$scannerAutoescape;
 
 					if($scannerAutoescape < 0) {
-						$this->throwTokenException('{% endautoescape %}', $this->_file, $line);
+						$this->throwTokenException('{% endautoescape %}', $line);
 					} elseif($scannerAutoescape === 0) {
 						$intermediate[] = Tokenizer::autoescapeFragment($buffer.$match, $this->_file, $line);
 						$buffer = '';
@@ -279,7 +291,7 @@ class Scanner
 					//Check for {% endmacro %}
 					if(is_array($scannerMacro) === false ||
 						empty($buffer) === true) {
-						$this->throwTokenException('{% endmacro %}', $this->_file, $line);
+						$this->throwTokenException('{% endmacro %}', $line);
 					} else {
 						$intermediate[] = Tokenizer::macroFragment($scannerMacro['name'], $scannerMacro['params'], $buffer, $this->_file, $line);
 						$buffer = '';
@@ -302,7 +314,7 @@ class Scanner
 					--$scannerIf;
 
 					if($scannerIf < 0) {
-						$this->throwTokenException('{% endif %}', $this->_file, $line);
+						$this->throwTokenException('{% endif %}', $line);
 					} elseif($scannerIf === 0 &&
 						empty($buffer) === false) {
 						$intermediate[] = Tokenizer::ifFragment($buffer.$match, $this->_file, $line);
@@ -334,7 +346,7 @@ class Scanner
 					//Check for {% endfor %}
 					--$scannerFor;
 					if($scannerFor < 0) {
-						$this->throwTokenException('{% endfor %}', $this->_file, $line);
+						$this->throwTokenException('{% endfor %}', $line);
 					} elseif($scannerFor === 0 &&
 						empty($buffer) === false) {
 						$intermediate[] = Tokenizer::forFragment($buffer.$match, $this->_file, $line);
@@ -368,6 +380,20 @@ class Scanner
 	*/
 	public function scanArray()
 	{
-		
+		/* Splitting */
+		$flags = \PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE;
+		$expressions = array(
+			'(\[)',
+			'(\])',
+			'(,)',
+			'(:)',
+			'({)',
+			'(})'
+		);
+		$regexp = '#'.implode('|', $expressions).'#';
+		$matches = preg_split($regexp, $this->_volt, -1, $flags);
+
+		/* Scanning */
+		//@todo
 	}
 }
