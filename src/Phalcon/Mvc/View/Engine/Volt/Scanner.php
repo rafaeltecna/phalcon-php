@@ -373,12 +373,12 @@ class Scanner
 	}
 
 	/**
-	 * Identify and extract array data
+	 * Identify and extract expressions
 	 * 
 	 * @throws Exception
 	 * @return array
 	*/
-	public function scanArray()
+	public function scanExpression()
 	{
 		/* Splitting */
 		$flags = \PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE;
