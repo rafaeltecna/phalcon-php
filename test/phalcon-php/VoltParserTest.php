@@ -303,4 +303,23 @@ class VoltParserTest extends BaseTest
 			)
 		));
 	}
+
+	public function testSimpleEcho()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{{ 1 }}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 359,
+				'expr' => array(
+					'type' => 258,
+					'value' => '1',
+					'file' => 'eval code',
+					'line' => 1
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
 }

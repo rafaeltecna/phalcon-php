@@ -8,6 +8,8 @@
 */
 namespace Phalcon\Mvc\View\Engine\Volt;
 
+use \Phalcon\Mvc\View\Engine\Volt\Scanner;
+
 /**
  * Volt Tokenizer
 */
@@ -39,7 +41,13 @@ class Tokenizer
 	*/
 	public static function echoFragment($data, $file, $line)
 	{
-
+		$scanner = new Scanner($data);
+		return array(
+			'type' => 359,
+			'expr' => $scanner->scanExpression(),
+			'file' => $file,
+			'line' => $line
+		);
 	}
 
 	/**
@@ -51,7 +59,12 @@ class Tokenizer
 	*/
 	public static function extendsFragment($extendsFile, $file, $line)
 	{
-
+		return array(
+			'type' => 310,
+			'path' => $extendsFile,
+			'file' => $file,
+			'line' => $line
+		);
 	}
 
 	/**
