@@ -6,6 +6,19 @@
 */
 class VoltParserTest extends BaseTest
 {
+	public function testRawFragment()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('<p>Test + Paragraph</p>');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 357,
+				'value' => '<p>Test + Paragraph</p>',
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
 	public function testEchoArray()
 	{
 		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{{ [[1, 2], [3, 4], [5, 6]] }}');

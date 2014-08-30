@@ -22,7 +22,12 @@ class Tokenizer
 	*/
 	public static function rawFragment($data, $file, $line)
 	{
-
+		return array(
+			'type' => 357,
+			'value' => $data,
+			'file' => $file,
+			'line' => $line
+		);
 	}
 
 	/**

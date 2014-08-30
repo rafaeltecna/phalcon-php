@@ -114,7 +114,7 @@ class Scanner
 		$scannerStatement = false;
 		$scannerInString = 0;
 
-		$line = 0;
+		$line = 1;
 		$buffer = '';
 		$intermediate = array();
 
@@ -369,6 +369,16 @@ class Scanner
 			$buffer .= $match;
 		}
 
+		if($scannerComment === 0 && $scannerAutoescape === 0 && $scannerCache === 0 &&
+			$scannerIf === 0 && $scannerFor === 0 && $scannerBlock === null && $scannerMacro === null &&
+			$scannerStatement === false) {
+			if(empty($buffer) === false) {
+				$intermediate[] = Tokenizer::rawFragment($buffer, $this->_file, $line);
+			}
+		} else {
+			throw new Exception('Missing volt token.');
+		}
+		
 		return $intermediate;
 	}
 
