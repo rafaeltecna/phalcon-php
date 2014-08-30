@@ -116,4 +116,178 @@ class VoltParserTest extends BaseTest
 			)
 		));
 	}
+
+	public function testAddition()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{{ 3 + 2 }}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 359,
+				'expr' => array(
+					array(
+						'type' => 43,
+						'left' => array(
+							'type' => 258,
+							'value' => '3',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'right' => array(
+							'type' => 258,
+							'value' => '2',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function testSubtraction()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{{ 3 - 2 }}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 359,
+				'expr' => array(
+					array(
+						'type' => 45,
+						'left' => array(
+							'type' => 258,
+							'value' => '3',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'right' => array(
+							'type' => 258,
+							'value' => '2',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function testMultiplication()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{{ 3 * 2 }}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 359,
+				'expr' => array(
+					array(
+						'type' => 42,
+						'left' => array(
+							'type' => 258,
+							'value' => '3',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'right' => array(
+							'type' => 258,
+							'value' => '2',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function testModulo()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{{ 3 % 2 }}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 359,
+				'expr' => array(
+					array(
+						'type' => 37,
+						'left' => array(
+							'type' => 258,
+							'value' => '3',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'right' => array(
+							'type' => 258,
+							'value' => '2',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function testDivision()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{{ 3 / 2 }}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 359,
+				'expr' => array(
+					array(
+						'type' => 47,
+						'left' => array(
+							'type' => 258,
+							'value' => '3',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'right' => array(
+							'type' => 258,
+							'value' => '2',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function testExtends()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% extends "base.volt" %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 310,
+				'path' => 'base.volt',
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
 }
