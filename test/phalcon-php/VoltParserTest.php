@@ -322,4 +322,78 @@ class VoltParserTest extends BaseTest
 			)
 		));
 	}
+
+	public function testSimpleBlock()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% block content %}{% endblock %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 307,
+				'name' => 'content',
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function testRawBlock()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% block content %}Raw Content{% endblock %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 307,
+				'name' => 'content',
+				'block_statements' => array(
+					array(
+						'type' => 357,
+						'value' => 'Raw Content',
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function testMathBlock()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% block content %}{{ 1 + 2}}{% endblock %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 307,
+				'name' => 'content',
+				'block_statements' => array(
+					array(
+						'type' => 359,
+						'expr' => array(
+							'type' => 43,
+							'left' => array(
+								'type' => 258,
+								'value' => '1',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'right' => array(
+								'type' => 258,
+								'value' => '2',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
 }

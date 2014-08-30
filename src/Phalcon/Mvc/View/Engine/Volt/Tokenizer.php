@@ -77,7 +77,23 @@ class Tokenizer
 	*/
 	public static function blockFragment($blockName, $blockData, $file, $line)
 	{
-
+		if(empty($blockData) === true) {
+			return array(
+				'type' => 307,
+				'name' => $blockName,
+				'file' => $file,
+				'line' => $line
+			);
+		} else {
+			$scanner = new Scanner($blockData);
+			return array(
+				'type' => 307,
+				'name' => $blockName,
+				'block_statements' => $scanner->scanBlockStatements($line),
+				'file' => $file,
+				'line' => $line
+			);
+		}
 	}
 
 	/**

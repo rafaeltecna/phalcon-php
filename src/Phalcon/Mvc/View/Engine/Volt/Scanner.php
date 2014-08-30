@@ -8,6 +8,8 @@
 */
 namespace Phalcon\Mvc\View\Engine\Volt;
 
+use \Phalcon\Mvc\View\Exception;
+
 /**
  * Volt Scanner
 */
@@ -69,10 +71,15 @@ class Scanner
 	 * Identify and extract block statements
 	 * 
 	 * @throws Exception
+	 * @param int $line
 	 * @return array
 	*/
-	public function scanBlockStatements()
+	public function scanBlockStatements($line = 1)
 	{
+		if(is_int($line) === false) {
+			throw new Exception('Invalid parameter type.');
+		}
+
 		/* Splitting */
 		$flags = \PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE;
 		$expressions = array(
@@ -114,7 +121,6 @@ class Scanner
 		$scannerStatement = false;
 		$scannerInString = 0;
 
-		$line = 1;
 		$buffer = '';
 		$intermediate = array();
 
@@ -216,8 +222,7 @@ class Scanner
 					
 				} elseif(preg_match('#^{%\s*endblock\s*%}$#', $match) != false) {
 					//Check for {% endblock %}
-					if(is_string($scannerBlock) === false ||
-						empty($buffer) === true) {
+					if(is_string($scannerBlock) === false) {
 						$this->throwTokenException('{% endblock %}', $line);
 					} else {
 						$intermediate[] = Tokenizer::blockFragment($scannerBlock, $buffer, $this->_file, $line);
@@ -378,7 +383,7 @@ class Scanner
 		} else {
 			throw new Exception('Missing volt token.');
 		}
-		
+
 		return $intermediate;
 	}
 
