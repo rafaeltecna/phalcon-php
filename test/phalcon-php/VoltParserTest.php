@@ -396,4 +396,112 @@ class VoltParserTest extends BaseTest
 			)
 		));
 	}
+
+	public function testSimpleCacheFragment()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% cache "sidebar" %}<p>data</p>{% endcache %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+		array(
+			'type' => 314,
+			'expr' => array(
+				'type' => 260,
+				'value' => 'sidebar',
+				'file' => 'eval code',
+				'line' => 1
+			),
+			'block_statements' => array(
+				array(
+					'type' => 357,
+					'value' => '<p>data</p>',
+					'file' => 'eval code',
+					'line' => 1
+				)
+			),
+			'file' => 'eval code',
+			'line' => 1
+		)));
+	}
+
+	public function testExtendedCacheFragment()
+	{
+		$paerser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% cache "sidebar" 3600 %}<p>data</p>{% endcache %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+		array(
+			'type' => 314,
+			'expr' => array(
+				'type' => 260,
+				'value' => 'sidebar',
+				'file' => 'eval code',
+				'line' => 1
+			),
+			'lifetime' => '3600',
+			'block_statements' => array(
+				array(
+					'type' => 357,
+					'value' => '<p>data</p>',
+					'file' => 'eval code',
+					'line' => 1
+				)
+			),
+			'file' => 'eval code',
+			'line' => 1
+		)));
+	}
+
+	public function testComplexCacheFragment()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% cache ("article-" ~ post.id) 3600 %}<p>data</p>{% endcache %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 314,
+				'expr' => array(
+					'type' => 356,
+					'left' => array(
+						'type' => 126,
+						'left' => array(
+							'type' => 260,
+							'value' => 'article-',
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'right' => array(
+							'type' => 46,
+							'left' => array(
+								'type' => 265,
+								'value' => 'post',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'right' => array(
+								'type' => 265,
+								'value' => 'id',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					),
+					'file' => 'eval code',
+					'line' => 1
+				),
+				'lifetime' => '3600',
+				'block_statements' => array(
+					array(
+						'type' => 357,
+						'value' => '<p>data</p>',
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
 }
