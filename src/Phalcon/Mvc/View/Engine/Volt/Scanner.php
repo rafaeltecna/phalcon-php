@@ -92,10 +92,10 @@ class Scanner
 			'({%\s*extends\s+"(?:.*)"\s*%})',
 			'({%\s*block\s*(?:\w+)\s*%})',
 			'({%\s*endblock\s*%})',
-			'({%\s*cache\s+(?:.*)\s*(?:\d*)\s*%})',
-			'({%\s*endcache[\s]*%})',
-			'({%\s*autoescape\s+(?:true|false)\s*%})',
+			'({%\s*endcache\s*%})',
+			'({%\s*cache\s+(?:[^{}]*)\s*(?:\d*)\s*%})',
 			'({%\s*endautoescape\s*%})',
+			'({%\s*autoescape\s+(?:true|false)\s*%})',
 			'({%(?:-?)\s*macro\s*(?:\w)\((?:(?:(?:\w)\s*(?:,?)\s*)+)\)\s*%})',
 			'({%\s*endmacro\s*%})',
 			'({%\s*if\s*(?:.*)\s*%})',
@@ -231,17 +231,7 @@ class Scanner
 						$scannerBlock = null;
 					}
 
-				} elseif(preg_match('#^{%\s*cache\s+(?:.*)\s*(?:\d*)\s*%}$#', $match) != false) {
-					//Check for {% cache NAME TTL %}
-					if($scannerCache === 0 &&
-						empty($buffer) === false) {
-						$intermediate[] = Tokenizer::rawFragment($buffer, $this->_file, $line);
-						$buffer = '';
-					}
-
-					++$scannerCache;
-
-				} elseif(preg_match('#^{%\s*endcache[\s]*%}$#', $match) != false) {
+				} elseif(preg_match('#^{%\s*endcache\s*%}$#', $match) != false) {
 					//Check for {% endcache %}
 					--$scannerCache;
 
@@ -252,6 +242,16 @@ class Scanner
 						$buffer = '';
 						$match = '';
 					}
+
+				} elseif(preg_match('#^{%\s*cache\s+(?:[^{}]*)\s*(?:\d*)\s*%}$#', $match) != false) {
+					//Check for {% cache NAME TTL %}
+					if($scannerCache === 0 &&
+						empty($buffer) === false) {
+						$intermediate[] = Tokenizer::rawFragment($buffer, $this->_file, $line);
+						$buffer = '';
+					}
+
+					++$scannerCache;
 
 				} elseif(preg_match('#^{%\s*autoescape\s+(?:true|false)\s*%}$#', $match) != false) {
 					//Check for {% autoescape BOOL %}

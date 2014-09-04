@@ -8,7 +8,8 @@
 */
 namespace Phalcon\Mvc\View\Engine\Volt;
 
-use \Phalcon\Mvc\View\Engine\Volt\Scanner;
+use \Phalcon\Mvc\View\Engine\Volt\Scanner,
+	\Phalcon\Mvc\View\Exception;
 
 /**
  * Volt Tokenizer
@@ -102,10 +103,41 @@ class Tokenizer
 	 * @param string $data
 	 * @param string $file
 	 * @param int $line
+	 * @throws Exception
 	*/
 	public static function cacheFragment($data, $file, $line)
 	{
+		$matches = array();
+		if(preg_match('#^{%\s*cache\s+(?P<expr>[^{}]*)\s*(?P<ttl>\d*)\s*%}(?P<block>.*){%\s*endcache\s*%}$#', $data, $matches) == false) {
+			throw new Exception('Malformed caching expression.');
+		}
 
+		if(empty($matches['expr']) === true ||
+			empty($matches['block']) === true) {
+			throw new Exception('Malformed caching expression.');
+		}
+
+		$blockScanner = new Scanner($matches['block']);
+		$exprScanner = new Scanner($matches['expr']);
+
+		if(empty($matches['ttl']) === false) {
+			return array(
+				'type' => 314,
+				'expr' => $exprScanner->scanExpression(),
+				'lifetime' => $matches['ttl'],
+				'block_statements' => $blockScanner->scanBlockStatements(),
+				'file' => $file,
+				'line' => $line
+			);
+		} else {
+			return array(
+				'type' => 314,
+				'expr' => $exprScanner->scanExpression(),
+				'block_statements' => $blockScanner->scanBlockStatements(),
+				'file' => $file,
+				'line' => $line
+			);
+		}
 	}
 
 	/**

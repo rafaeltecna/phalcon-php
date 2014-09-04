@@ -425,7 +425,7 @@ class VoltParserTest extends BaseTest
 
 	public function testExtendedCacheFragment()
 	{
-		$paerser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% cache "sidebar" 3600 %}<p>data</p>{% endcache %}');
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% cache "sidebar" 3600 %}<p>data</p>{% endcache %}');
 
 		$this->assertEquals($parser->scanBlockStatements(), array(
 		array(
