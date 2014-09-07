@@ -504,4 +504,92 @@ class VoltParserTest extends BaseTest
 			)
 		));
 	}
+
+	public function autoescapeTestTrue()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% autoescape true %}Autoescaped: {{ robot.name }}{% endautoescape %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 317,
+				'enable' => 1,
+				'block_statements' => array(
+					array(
+						'type' => 357,
+						'value' => 'Autoesacped: ',
+						'file' => 'eval code',
+						'line' => 1
+					),
+					array(
+						'type' => 359,
+						'expr' => array(
+							'type' => 46,
+							'left' => array(
+								'type' => 265,
+								'value' => 'robot',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'right' => array(
+								'type' => 265,
+								'value' => 'name',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
+
+	public function autoescapeTestFalse()
+	{
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% autoescape true %}Autoescaped: {{ robot.name }}{% endautoescape %}');
+
+		$this->assertEquals($parser->scanBlockStatements(), array(
+			array(
+				'type' => 317,
+				'enable' => 0,
+				'block_statements' => array(
+					array(
+						'type' => 357,
+						'value' => 'Autoesacped: ',
+						'file' => 'eval code',
+						'line' => 1
+					),
+					array(
+						'type' => 359,
+						'expr' => array(
+							'type' => 46,
+							'left' => array(
+								'type' => 265,
+								'value' => 'robot',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'right' => array(
+								'type' => 265,
+								'value' => 'name',
+								'file' => 'eval code',
+								'line' => 1
+							),
+							'file' => 'eval code',
+							'line' => 1
+						),
+						'file' => 'eval code',
+						'line' => 1
+					)
+				),
+				'file' => 'eval code',
+				'line' => 1
+			)
+		));
+	}
 }
