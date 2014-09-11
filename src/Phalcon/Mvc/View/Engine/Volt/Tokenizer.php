@@ -146,10 +146,29 @@ class Tokenizer
 	 * @param string $data
 	 * @param string $file
 	 * @param int $line
+	 * @throws Exception
 	*/
 	public static function autoescapeFragment($data, $file, $line)
 	{
+		var_dump($data);
+		$matches = array();
+		if(preg_match('#^{%\s*autoescape\s+(?P<mode>true|false)\s*%}(?P<block>.*){%\s*endautoescape\s*%}$#', $data, $matches) == false) {
+			throw new Exception('Malformed autoescaping expression.');
+		}
 
+		if(empty($matches['block']) === true) {
+			throw new Exception('Malformed autoescaping expression.');
+		}
+
+		$blockScanner = new Scanner($matches['block']);
+
+		return array(
+			'type' => 317,
+			'enable' => ($matches['mode'] === 'true' ? 1 : 0),
+			'block_statements' => $blockScanner->scanBlockStatements(),
+			'file' => $file,
+			'line' => $line
+		);
 	}
 
 	/**

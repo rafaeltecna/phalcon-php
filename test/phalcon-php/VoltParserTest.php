@@ -505,7 +505,7 @@ class VoltParserTest extends BaseTest
 		));
 	}
 
-	public function autoescapeTestTrue()
+	public function testAutoescapeTrue()
 	{
 		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% autoescape true %}Autoescaped: {{ robot.name }}{% endautoescape %}');
 
@@ -549,9 +549,9 @@ class VoltParserTest extends BaseTest
 		));
 	}
 
-	public function autoescapeTestFalse()
+	public function testAutoescapeFalse()
 	{
-		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% autoescape true %}Autoescaped: {{ robot.name }}{% endautoescape %}');
+		$parser = new Phalcon\Mvc\View\Engine\Volt\Scanner('{% autoescape false %}Autoescaped{% endautoescape %}');
 
 		$this->assertEquals($parser->scanBlockStatements(), array(
 			array(
@@ -560,29 +560,7 @@ class VoltParserTest extends BaseTest
 				'block_statements' => array(
 					array(
 						'type' => 357,
-						'value' => 'Autoesacped: ',
-						'file' => 'eval code',
-						'line' => 1
-					),
-					array(
-						'type' => 359,
-						'expr' => array(
-							'type' => 46,
-							'left' => array(
-								'type' => 265,
-								'value' => 'robot',
-								'file' => 'eval code',
-								'line' => 1
-							),
-							'right' => array(
-								'type' => 265,
-								'value' => 'name',
-								'file' => 'eval code',
-								'line' => 1
-							),
-							'file' => 'eval code',
-							'line' => 1
-						),
+						'value' => 'Autoesacped',
 						'file' => 'eval code',
 						'line' => 1
 					)

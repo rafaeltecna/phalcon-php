@@ -253,6 +253,17 @@ class Scanner
 
 					++$scannerCache;
 
+				} elseif(preg_match('#^{%\s*endautoescape\s*%}$#', $match) != false) {
+					//Check for {% endautoescape %}
+					--$scannerAutoescape;
+					if($scannerAutoescape < 0) {
+						$this->throwTokenException('{% endautoescape %}', $line);
+					} elseif($scannerAutoescape === 0) {
+						$intermediate[] = Tokenizer::autoescapeFragment($buffer.$match, $this->_file, $line);
+						$buffer = '';
+						$match = '';
+					}
+
 				} elseif(preg_match('#^{%\s*autoescape\s+(?:true|false)\s*%}$#', $match) != false) {
 					//Check for {% autoescape BOOL %}
 					if($scannerAutoescape === 0 &&
@@ -262,18 +273,6 @@ class Scanner
 					}
 
 					++$scannerAutoescape;
-
-				} elseif(preg_match('#^{%\s*endautoescape\s*%}$#', $match) != false) {
-					//Check for {% autoescape %}
-					--$scannerAutoescape;
-
-					if($scannerAutoescape < 0) {
-						$this->throwTokenException('{% endautoescape %}', $line);
-					} elseif($scannerAutoescape === 0) {
-						$intermediate[] = Tokenizer::autoescapeFragment($buffer.$match, $this->_file, $line);
-						$buffer = '';
-						$match = '';
-					}
 
 				} elseif(preg_match('#^{%(?:-?)\s*macro\s*(?P<name>\w)\((?P<params>(?:(?:\w)\s*(?:,?)\s*)+)\)\s*%}$#', $match, $blockMatches) != false) {
 					//Check for {% macro NAME(PARAMS) %}
